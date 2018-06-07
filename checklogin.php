@@ -3,9 +3,11 @@
 	require 'config.php';
 	
 	$username = $_POST['username'];
-	$password = sha1($_POST['password']);
+	$password = $_POST['password'];
+	//$password = sha1($_POST['password']);
 	
 	$query = mysql_query("SELECT id FROM userinfo WHERE username='$username' AND password='$password' LIMIT 1") or die('SQL 错误！');
+
 	
 	if (!!mysql_fetch_array($query, MYSQL_ASSOC)) {
 		$_SESSION['admin'] = $username;
@@ -13,5 +15,7 @@
 	} else {
 		echo 0;
 	}
+
+
 	
 ?>

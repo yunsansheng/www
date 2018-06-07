@@ -301,6 +301,7 @@ header("Access-Control-Allow-Origin: *");
 					sign:$sign,
 				},
 				success:function(){
+
 					$("#table").bootstrapTable('refresh');
 					
 				}
@@ -312,7 +313,9 @@ header("Access-Control-Allow-Origin: *");
 
 			var $this = $(this);
 			$oid =  $this.attr("oid");
-			$del = changebool($this.val())
+			$del = changebool($this.val());
+			$deltype = $(".sel_del.active").attr("value");
+
 
 			//alert($del)
 			$.ajax({
@@ -323,8 +326,17 @@ header("Access-Control-Allow-Origin: *");
 					del:$del,
 				},
 				success:function(){
-					$("#table").bootstrapTable('refresh');
+					//console.log($del);//1
+					//console.log($deltype);//(0)
+					//$oid一定要是string类型才可以
 					
+					//只有 图标是删除，并且过滤条件是为删除才从界面删除（假删除）
+					if ($del ==1 && $deltype=="(0)" ){
+						$("#table").bootstrapTable('remove', {field: 'id', values: [$oid]});
+					}
+					
+					//$("#table").bootstrapTable('refresh');
+
 					
 				}
 			});
