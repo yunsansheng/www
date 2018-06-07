@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>五线识谱</title>
+	<link rel="stylesheet" href="../../lib/zui/dist/css/zui.min.css">
+	<style>
+	body{
+		margin:0px;
+		padding: 10px;
+	}
+	#img1,#img2{
+		border: none;
+	}
+	#img2{
+		margin-left:-10px; 
+	}
+	#table1{
+		cursor:pointer;
+	}
+
+	span{
+		cursor:pointer;
+	}
+	#day_show,#hour_show{
+		display:none;
+	}
+
+	.time-item span {
+	    /*background:grey;*/
+	    color:grey;
+	    /*line-height:49px;*/
+	    font-size:20px;
+	    font-family:Arial;
+	    padding:0 10px;
+	    margin-right:10px;
+	    border-radius:5px;
+	    box-shadow:1px 1px 3px rgba(0,0,0,0.2);
+	}
+	#tongji{
+		display: inline-block;
+		margin-left: 50px;
+	}
+
+	#iptmin{
+		display: inline;
+		width:123px;
+		margin:10px 0px;
+	}
+
+	#jianpan{  /*整个键盘*/
+		margin: 0px;
+		padding: 0px;
+		font-size:0;  /*去掉空隙*/
+	}
+	.jian{/*键的格式*/
+		border: solid 1px black;
+		display: inline-block;
+	}
+	.hj{/*黑键*/
+		margin-bottom :50px;
+		height:66px;
+		width:15px;
+		position: absolute;
+		margin-left:-8px;
+		background:black;
+	}
+
+	.bj{/*白键*/
+		height:100px;
+		width:22px;
+		background:white;
+
+	}
+
+
+
+	</style>
+</head>
+<body>
+	
+
+	<div class="modal fade" id="myModal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        <h4 class="modal-title">成绩统计</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p id="strcontent"></p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+
+	<input class="form-control"  id="iptmin"  type="text" placeholder="输入分钟数" value=1	>
+	<button class="btn btn-primary" id="train" type="button" onClick="timermin()">开始训练</button>
+	<h3 id="tongji">
+	统计信息：
+    正确:<span id="istrue" style="color:blue">0</span>
+    错误:<span id="isfalse" style="color:red" >0</span>
+    正确率:<span style="color:green"><span id="t_percent">0</span> %</span>
+	</h3>
+
+	<!-- 倒计时 -->
+	<div class="time-item">
+	    <span id="minute_show">0分</span>
+	    <span id="second_show">0秒</span>
+	</div>
+
+
+
+	<div>
+		<img border="0" id="img1" src="../../mylib\yuepu\low.gif" width="113" height="170">
+		<img border="0" id="img2" src="../../mylib\yuepu\m2.gif" width="90" height="170">
+	</div>
+	
+	 <input type="checkbox" id="disjian">显示键盘
+	<!-- <input type="checkbox" id="color">显示彩色-->
+	<!-- 显示和操作框 -->
+	<table border="0" width="400" id="table1" cellspacing="0" cellpadding="0">
+	<tr>
+	<td align="center"><font face="Arial Black" size="7" id="C" style=cursor:hand; onClick=javascript:check('C');>C</font></td>
+			<td align="center" ><font face="Arial Black" size="7" id="D" onClick=javascript:check('D');>D</font></td>
+			<td align="center"><font face="Arial Black" size="7" id="E"  onClick=javascript:check('E');>E</font></td>
+			<td align="center"><font face="Arial Black" size="7" id="F"  onClick=javascript:check('F');>F</font></td>
+			<td align="center"><font face="Arial Black" size="7" id="G"  onClick=javascript:check('G');>G</font></td>
+			<td align="center"><font face="Arial Black" size="7" id="A"  onClick=javascript:check('A');>A</font></td>
+			<td align="center"><font face="Arial Black" size="7" id="B" onClick=javascript:check('B');>B</font></td>
+		</tr>
+
+	</table>
+
+
+	<div id="jianpan" hidden>
+		<!-- 大字二组 -->
+		<div class='jian bj' col='A2'></div>
+		<div class='jian hj' col='As2'></div>
+		<div class='jian bj' col='B2'></div>
+
+		<!-- 大字一组 -->
+		<div class='jian bj' col='C1'></div>
+		<div class='jian hj' col='C1s'></div>
+		<div class='jian bj' col='D1'></div>
+		<div class='jian hj' col='D1s'></div>
+		<div class='jian bj' col='E1'></div>
+		<div class='jian bj' col='F1'></div>
+		<div class='jian hj' col='F1s'></div>
+		<div class='jian bj' col='G1'></div>
+		<div class='jian hj' col='G1s'></div>
+		<div class='jian bj' col='A1'></div>
+		<div class='jian hj' col='A1s'></div>
+		<div class='jian bj' col='B1'></div>
+
+		<!-- 大字组 -->
+		<div class='jian bj' col='C'></div>
+		<div class='jian hj' col='Cs'></div>
+		<div class='jian bj' col='D'></div>
+		<div class='jian hj' col='Ds'></div>
+		<div class='jian bj' col='E'></div>
+		<div class='jian bj' col='F'></div>
+		<div class='jian hj' col='Fs'></div>
+		<div class='jian bj' col='G'></div>
+		<div class='jian hj' col='Gs'></div>
+		<div class='jian bj' col='A'></div>
+		<div class='jian hj' col='As'></div>
+		<div class='jian bj' col='B'></div>
+
+		<!-- 小字组 -->
+		<div class='jian bj' col='c'></div>
+		<div class='jian hj' col='cs'></div>
+		<div class='jian bj' col='d'></div>
+		<div class='jian hj' col='ds'></div>
+		<div class='jian bj' col='e'></div>
+		<div class='jian bj' col='f'></div>
+		<div class='jian hj' col='fs'></div>
+		<div class='jian bj' col='g'></div>
+		<div class='jian hj' col='gs'></div>
+		<div class='jian bj' col='a'></div>
+		<div class='jian hj' col='as'></div>
+		<div class='jian bj' col='b'></div>
+		
+		<!-- 小字一组 -->
+		<div class='jian bj' col='c1'></div>
+		<div class='jian hj' col='c1s'></div>
+		<div class='jian bj' col='d1'></div>
+		<div class='jian hj' col='d1s'></div>
+		<div class='jian bj' col='e1'></div>
+		<div class='jian bj' col='f1'></div>
+		<div class='jian hj' col='f1s'></div>
+		<div class='jian bj' col='g1'></div>
+		<div class='jian hj' col='g1s'></div>
+		<div class='jian bj' col='a1'></div>
+		<div class='jian hj' col='a1s'></div>
+		<div class='jian bj' col='b1'></div>
+
+		<!-- 小字2组 -->
+		<div class='jian bj' col='c2'></div>
+		<div class='jian hj' col='c2s'></div>
+		<div class='jian bj' col='d2'></div>
+		<div class='jian hj' col='d2s'></div>
+		<div class='jian bj' col='e2'></div>
+		<div class='jian bj' col='f2'></div>
+		<div class='jian hj' col='f2s'></div>
+		<div class='jian bj' col='g2'></div>
+		<div class='jian hj' col='g2s'></div>
+		<div class='jian bj' col='a2'></div>
+		<div class='jian hj' col='a2s'></div>
+		<div class='jian bj' col='b2'></div>
+
+		<!-- 小字3组 -->
+		<div class='jian bj' col='c3'></div>
+		<div class='jian hj' col='c3s'></div>
+		<div class='jian bj' col='d3'></div>
+		<div class='jian hj' col='d3s'></div>
+		<div class='jian bj' col='e3'></div>
+		<div class='jian bj' col='f3'></div>
+		<div class='jian hj' col='f3s'></div>
+		<div class='jian bj' col='g3'></div>
+		<div class='jian hj' col='g3s'></div>
+		<div class='jian bj' col='a3'></div>
+		<div class='jian hj' col='a3s'></div>
+		<div class='jian bj' col='b3'></div>
+
+		<!-- 小字4组 -->
+		<div class='jian bj' col='c4'></div>
+		<div class='jian hj' col='c4s'></div>
+		<div class='jian bj' col='d4'></div>
+		<div class='jian hj' col='d4s'></div>
+		<div class='jian bj' col='e4'></div>
+		<div class='jian bj' col='f4'></div>
+		<div class='jian hj' col='f4s'></div>
+		<div class='jian bj' col='g4'></div>
+		<div class='jian hj' col='g4s'></div>
+		<div class='jian bj' col='a4'></div>
+		<div class='jian hj' col='a4s'></div>
+		<div class='jian bj' col='b4'></div>
+		
+		<!-- 小字五组 -->
+		<div class='jian bj' col='c5'></div>
+		
+	</div>
+	
+	<!-- 引入jquery -->
+	<script src="../../lib/jquery/jquery2.2.4.min.js"></script>
+	<script src="../../lib/zui/dist/js/zui.min.js"></script>
+	<script>
+	var yinfu_arr=['d7','d6','d5','d4','d3','d2','d1','m1','m2','m3','m4','m5','m6','m7','m8','m9','u1','u2','u3','u4','u5','u6','u7']
+
+	var puhao_arr=['high','low']
+
+
+	var high_obj={
+		'C':['d2','m6','u4'],
+		'D':['d1','m7','u5'],
+		'E':['d7','m1','m8','u6'],
+		'F':['d6','m2','m9','u7'],
+		'G':['d5','m3','u1'],
+		'A':['d4','m4','u2'],
+		'B':['d3','m5','u3']
+	}
+
+	var low_obj={
+		'C':['d4','m4','u2'],
+		'D':['d3','m5','u3'],
+		'E':['d2','m6','u4'],
+		'F':['d1','m7','u5'],
+		'G':['d7','m1','m8','u6'],
+		'A':['d6','m2','m9','u7'],
+		'B':['d5','m3','u1']
+	}
+
+	var high_jp={
+
+		'e':'d7', 
+		'f':'d6', 
+		'g':'d5', 
+		'a':'d4', 
+		'b':'d3', 
+		'c1':'d2', 
+		'd1':'d1', 
+		'e1':'m1', 
+		'f1':'m2', 
+		'g1':'m3', 
+		'a1':'m4', 
+		'b1':'m5', 
+		'c2':'m6', 
+		'd2':'m7', 
+		'e2':'m8', 
+		'f2':'m9', 
+		'g2':'u1', 
+		'a2':'u2', 
+		'b2':'u3', 
+		'c3':'u4', 
+		'd3':'u5', 
+		'e3':'u6', 
+		'f3':'u7' 
+	}
+
+	
+	var low_jp={
+
+			'G1':'d7',
+			'A1':'d6',
+			'B1':'d5',
+			'C':'d4',
+			'D':'d3',
+			'E':'d2',
+			'F':'d1',
+			'G':'m1',
+			'A':'m2',
+			'B':'m3',
+			'c':'m4',
+			'd':'m5',
+			'e':'m6',
+			'f':'m7',
+			'g':'m8',
+			'a':'m9',
+			'b':'u1',
+			'c1':'u2',
+			'd1':'u3',
+			'e1':'u4',
+			'f1':'u5',
+			'g1':'u6',
+			'a1':'u7'
+		}
+
+		var high_jp_op={
+
+			'd7':'e' ,
+			'd6':'f' ,
+			'd5':'g' ,
+			'd4':'a' ,
+			'd3':'b' ,
+			'd2':'c1', 
+			'd1':'d1', 
+			'm1':'e1', 
+			'm2':'f1', 
+			'm3':'g1', 
+			'm4':'a1', 
+			'm5':'b1', 
+			'm6':'c2', 
+			'm7':'d2', 
+			'm8':'e2', 
+			'm9':'f2', 
+			'u1':'g2', 
+			'u2':'a2', 
+			'u3':'b2', 
+			'u4':'c3', 
+			'u5':'d3', 
+			'u6':'e3', 
+			'u7':'f3'
+		}
+
+		
+		var low_jp_op={
+
+				'd7' :'G1',
+				'd6' :'A1',
+				'd5' :'B1',
+				'd4' :'C',
+				'd3' :'D',
+				'd2' :'E',
+				'd1' :'F',
+				'm1' :'G',
+				'm2' :'A',
+				'm3' :'B',
+				'm4' :'c',
+				'm5' :'d',
+				'm6' :'e',
+				'm7' :'f',
+				'm8' :'g',
+				'm9' :'a',
+				'u1' :'b',
+				'u2' :'c1',
+				'u3' :'d1',
+				'u4' :'e1',
+				'u5' :'f1',
+				'u6' :'g1',
+				'u7' :'a1'
+			}
+
+
+
+	$("td").mouseover(function(){
+		console.log(this);
+	  $(this).css("text-shadow",'2px 3px 2px grey');
+	});
+	$("td").mouseout(function(){
+	  $(this).css("text-shadow",'');
+	});
+
+	// var a= 'm6' 
+	// var b ='C'
+	// console.log(gaoyin_obj[b])
+	window['right']=parseInt($('#istrue').text());
+	window['wrong']=parseInt($('#isfalse').text());
+
+	function check(key){//C D E F G A B的判断
+		// // 1.检查是高音还是低音 决定传入obj 是哪个？ 通过img1判断
+		// // 3.获取img2  u1. u2
+		// // 4.检查 这个pn中是否存在   获取img2的
+		// // 5.存在 true 否则错误
+		var puhao = $('#img1').attr('src').slice(18,-4);
+		var check_obj={};
+
+
+		if (puhao==="high"){
+			check_obj=high_obj;
+		}else{
+			check_obj=low_obj;
+		}
+
+        var dtl= $('#img2').attr('src').slice(18,-4);
+        // console.log(check_obj(key));
+        check_arr=check_obj[key];
+        // $.inArray(dtl, check_arr);  //是的话返回0 否则返回-1
+		if ($.inArray(dtl, check_arr)!== -1 ){
+			// console.log('ok');1.显示正确，正确+1
+			window['right'] +=1
+			new $.zui.Messager('回答正确', {
+				type:'success',
+				time:500,
+			    placement: 'top' // 定义显示位置
+			}).show();
+		}else{
+			// console.log('no');1.显示错误，错误+1
+			window['wrong'] +=1
+			// 连续十次作答时间再0.1s 那么从arrry中删除这个。但要考虑到和低音
+			
+			new $.zui.Messager('回答错误', {
+				type:'danger',
+				time:500,
+			    placement: 'top' // 定义显示位置
+			}).show();
+		}
+		//覆盖统计信息
+		window['percent']=Math.round(right/(right+wrong)*100,2)
+		$('#istrue').text(right)
+		$('#isfalse').text(wrong)
+		$('#t_percent').text(percent)
+		
+
+		setTimeout("changeyp()",500)
+	
+	
+
+	}
+
+	// 随机数组中的一个数,传入一个数组。
+	function random_one(arr){
+     var index =Math.floor(Math.random() * arr.length);
+     return arr[index];
+	}
+
+	// next  调用切换
+	function changeyp(){
+		$(".jian").css({"background-color":""});
+		//判断puhao勾选那个，if elif else????
+
+		$('#img1')[0].src='../../mylib/yuepu/'+random_one(puhao_arr)+'.gif'
+
+		$('#img2')[0].src='../../mylib/yuepu/'+random_one(yinfu_arr)+'.gif'
+		$('font').css('color','grey')
+	}
+
+	// 界面的定时
+	function timermin(){
+		var intDiff=parseInt($('#iptmin').val())*60
+		$('#train').addClass('disabled');
+		$('#train').removeClass('btn-primary');
+		$('#train').text('训练中');
+		$('#iptmin').attr('disabled',true);
+	    var int =setInterval(function(){
+	    var minute=0,
+	        second=0;//时间默认值  
+
+	    if(intDiff > 0){
+	        minute = Math.floor(intDiff/60);
+	        second = Math.floor(intDiff) - (minute * 60);
+	    }      
+	    if (minute <= 9) minute = '0' + minute;
+	    if (second <= 9) second = '0' + second;
+	  
+	    intDiff--;
+	    $('#minute_show').text(minute+'分');
+	    $('#second_show').text(second+'秒');
+	    if(intDiff===0){
+	    	$('#second_show').text('00秒');
+	    	//倒计时完成后的代码
+	    	int=window.clearInterval(int)
+	    	code();
+	    }
+	    }, 1000);
+
+	} 
+	function code(){
+		$('#train').removeClass('disabled');
+		$('#train').addClass('btn-primary');
+		$('#train').text('开始训练');
+		$('#iptmin').attr('disabled',false);
+		
+		str='训练完成,识谱速度为每分钟'+Math.round((right)/parseInt($('#iptmin').val()))+'个,正确率为'+percent+'%';
+		$('#strcontent').text(str);
+		$('#myModal').modal({
+			backdrop: 'static',
+		    keyboard : false,
+		    show     : 'fit',
+		})
+		$('#istrue').text(0)
+		$('#isfalse').text(0)
+		$('#t_percent').text(0)
+		window['right']=0;
+		window['wrong']=0;
+		window['percent']=0;
+
+		
+	}
+
+ 	$(".jian").click(function(){
+ 	 	var puhao2 = $('#img1').attr('src').slice(18,-4);
+ 	 	var dtl2= $('#img2').attr('src').slice(18,-4);
+ 	 	var col =$(this).attr('col');
+ 	 	var check_col={};
+ 	 	var right_col;
+ 	 	if (puhao2==='high'){
+ 	 		check_col=high_jp;
+ 	 		right_col=high_jp_op[dtl2]
+
+ 	 	}else{
+ 	 		check_col=low_jp;
+ 	 		right_col=low_jp_op[dtl2]	
+
+ 	 	}
+ 	
+		if (check_col[col]===dtl2){
+			$(this).css({"background-color":"#38B03F"});
+			window['right'] +=1
+			new $.zui.Messager('回答正确', {
+				type:'success',
+				time:500,
+			    placement: 'top' // 定义显示位置
+			}).show();	
+
+
+		}else{
+			
+			$(this).css({"background-color":"#EA644A"});
+			$("[col='"+right_col+"']").css({"background-color":"#38B03F"});
+			
+			
+			window['wrong'] +=1
+			
+			new $.zui.Messager('回答错误', {
+				type:'danger',
+				time:500,
+			    placement: 'top' // 定义显示位置
+			}).show();
+
+		}
+
+		window['percent']=Math.round(right/(right+wrong)*100,2)
+		$('#istrue').text(right)
+		$('#isfalse').text(wrong)
+		$('#t_percent').text(percent)
+		
+
+		setTimeout("changeyp()",500)
+ 	});
+
+ 	$(".jian").mouseover(function(){
+ 	  $(this).css({"background-color":"#EBF2F9"});
+ 	});
+
+ 	$(".jian").mouseout(function(){
+ 	  $(this).css("background-color","");
+ 	});
+
+ 	$('#disjian').change(function() {
+ 	       if($(this).is(':checked')){
+ 	       	// console.log('勾选了');
+ 	       	$('#jianpan').removeAttr('hidden');
+ 	       }else{
+ 	       	// console.log('取消了');
+ 	       	$('#jianpan').attr('hidden',true);
+ 	       }
+    });
+
+	$('#color').change(function() {
+	       if($(this).is(':checked')){
+	       	// console.log('显示彩色');
+	       	// 
+	       	$($('font')[0]).css('color','#FF0000')
+	       	$($('font')[1]).css('color','#FF9900')
+	       	$($('font')[2]).css('color','#FFFF00')
+	       	$($('font')[3]).css('color','#FFFF00')
+	       	$($('font')[4]).css('color','#00FF00')
+	       	$($('font')[5]).css('color','#0000FF')
+	       	$($('font')[6]).css('color','#CC00CC')
+	       }else{
+	       	// console.log('显示黑色');
+
+	       	$('font').css('color','grey')
+	       }
+   });
+
+	$('font').css('color','grey')
+
+	// 可以增加每分钟历史最高纪录。
+
+	////////////////////////////
+	// 当点击空格时，自动刷新，并在键盘上显示绿色 //
+	////////////////////////////
+	$(document).keypress(function(event){  
+	    var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '32'){  
+	    	var puhao2 = $('#img1').attr('src').slice(18,-4);
+	    	var dtl2= $('#img2').attr('src').slice(18,-4);
+	    	var check_obj={};
+	    	var right_col;
+	    	if (puhao2==='high'){
+	    		right_col=high_jp_op[dtl2]
+	    		check_obj=high_obj
+
+	    	}else{
+	    		right_col=low_jp_op[dtl2]	
+	    		check_obj=low_obj
+
+	    	}
+	    	$("[col='"+right_col+"']").css({"background-color":"red"});
+	    	console.log(puhao2)
+	    	console.log(dtl2)
+	    	for (var i in check_obj){
+	    		// console.log(check_obj[i])
+	    		// console.log(i)
+	    		// 检查dtl2在哪个数组中
+	    		if ($.inArray(dtl2, check_obj[i])!== -1 ){
+	    			
+	    			$('#'+i).css('color','red');
+	    		}else{
+	    			
+	    		}
+	    	}
+	    	setTimeout("changeyp()",500);
+
+
+
+	    	
+	    }  
+	});  
+	</script>
+</body>
+
+</html>

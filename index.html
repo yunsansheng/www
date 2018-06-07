@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>登录</title>
+	<link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
+	<style>
+	body{
+		background: #33CCCC;
+		
+	}
+	#login_panel{
+		margin: 100px 15px 0px;
+		
+	}
+	#inputusername,#inputpassword,#ck_rmbUser,#login{
+		margin-top: 12px;
+	}
+
+	.p1{font-size:46px;letter-spacing:-2px;font-family:Arial,Helvetica, Sans-Serif;}
+	  .g1{color:#1065e6;}
+	  .o1{color:#df432e;}
+	  .o2{color:#ffb709;}
+	  .g2{color:#166df1;}
+	  .l{color:#03a25d;}
+	  .e{color:#d64632;}
+
+	.logo{
+		text-align: center;
+	}
+	.row{
+		max-width: 600px;
+		margin-left:auto;
+		margin-right:auto;
+	
+	}
+	.container{
+		/*border: 1px solid red;*/
+		max-width: 400px;
+		margin: 0 auto;
+	}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+
+		<div id="login_panel">
+			<!-- logo -->
+			<div class="row logo">
+					<span class="p1 g1">Q</span>
+					<span class="p1 o1">s</span>
+					<span class="p1 o2">o</span>
+					<span class="p1 g2">n</span>
+					<span class="p1 l">e</span>
+					<span class="p1 e">s</span>
+			</div>
+			
+			<!-- 用户名 -->
+			<div class="row">
+				<input type="text" id="inputusername"  class="form-control"  placeholder="请输入用户名">
+			</div>
+			<!-- 密码 -->
+			<div class="row">
+				<input type="password" id="inputpassword"  class="form-control"  placeholder="请输入密码">
+			</div>
+			<!-- 记住我 -->
+			<div class="row">
+				<input type="checkbox" id="ck_rmbUser" checked> Remember me
+			</div>
+			<!-- 登录 -->
+			<div class="row">
+				<button type="button" class="btn btn-primary btn-block" id="login"><b>Sign in</b></button>
+			</div>
+		</div>
+
+	</div>
+	
+	<!-- 引入jquery -->
+	<script src="lib/bootstrap/jquery2.2.4.min.js"></script>
+	<script src="lib/bootstrap/jquery.cookie.js"></script> 
+	<script>
+
+		$("#login").click(function(){
+				$.ajax({
+					url : 'checklogin.php',
+					type : 'post',
+					data : {
+						username : $('#inputusername').val(),
+						password : $('#inputpassword').val(),
+					},
+					success : function (data, response, status) {
+						
+						if (data > 0) {
+							
+							location.href = 'web/home/home.php';
+						} else {
+							alert('用户名或密码错误，登录失败');
+						}
+					},
+				});
+		});
+
+		$(function(){
+
+			// cookie给界面赋值赋值
+			if ($.cookie("rmbUser") == "true") {
+			    $("#ck_rmbUser").attr("checked", true);
+			    $("#inputusername").val($.cookie("str_user"));
+			    $("#inputpassword").val($.cookie("str_psw"));
+			    }
+		
+			//生成cookie
+			$("#login").click(function(){
+				 if ($("#ck_rmbUser").is(":checked")==true) {
+			      var str_user = $("#inputusername").val();
+			      var str_psw = $("#inputpassword").val();
+			      $.cookie("rmbUser", "true", { expires: 30 }); //存储一个带30天期限的cookie
+			      $.cookie("str_user", str_user, { expires: 30 });
+			      $.cookie("str_psw", str_psw, { expires: 30 });
+			    }
+			    else {
+			      $.cookie("rmbUser", "false", { expire: -1 });
+			      $.cookie("str_user", "", { expires: -1 });
+			      $.cookie("str_psw", "", { expires: -1 });
+			    }
+
+		});
+
+		});
+
+	</script>
+
+</body>
+
+</html>

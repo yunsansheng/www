@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>数字闪现</title>
+	<link rel="stylesheet" href="../../lib/zui/dist/css/zui.min.css">
+
+	<style>
+
+	.container{
+		max-width: 380px;
+		/*margin-top: 100px;*/
+	}
+	.count{
+		width:60px;
+	}
+	#num,#times{
+		width:90px;
+	
+	}
+	#show,#ipt,#newone,#postresult{
+		margin-top:20px; 
+	}
+
+	#postresult{
+		margin-left:150px;
+	}
+
+	</style>
+
+
+
+</head>
+<body>
+	
+	<div class ="container">
+		<div class="counts" >
+		<h5>统计信息：</h5>
+		正确:<input type="text"  class="count" id="right" disabled value=0>
+		错误:<input type="text" class="count" id="wrong" disabled value=0>
+		正确率:<input type="text" class="count" id="percent" value=0 disabled>%
+		</div>
+		<hr>
+
+		<form action="">
+		位数：<input type="text" id="num"  value='9'>
+		显示时间:<input  type="text" id="times"  value ='500'>ms
+
+		<input class="form-control input-lg" type="text" id="show"  disabled>
+		<input class="form-control input-lg" type="text" id="ipt" placeholder="点击Enter生成和提交答案" disabled>
+		<button class="btn " type="button" id='newone' onclick="donew()" >生成新的</button>
+		<button class="btn btn-primary" type="button" id="postresult" onclick="checknum()">提交答案</button>
+
+
+		</form>
+
+	
+
+	</div>
+
+
+
+	<script src="../../lib/jquery/jquery-1.11.js"></script>
+	<script src="../../lib/zui/dist/js/zui.min.js"></script>
+	
+	<script>
+
+	
+	show=null;//显示的值
+	ipt=null;//输入的值
+
+	// 定义 right and wrong
+	right=0
+	wrong=0
+	percent=0
+
+	//传入一个num,生成指定位数的随机数
+	creatnum=function (num){
+		//eg: 4  1000*随机数+9000 随机数是0-1
+		return Math.floor(Math.random()* 9*Math.pow(10,num-1)) + Math.pow(10,num-1)
+	}
+	clearshow=function(){
+		show =$('#show').val();
+		$('#show').val('');
+		$('#ipt').focus()
+	
+	}
+
+	//在点击生成时 
+	//1.显示随机数 2.可以输入答案 3.根据输入的s 消失 4.输入的地方获得焦点
+	donew=function(){
+	  var nums=$('#num').val();
+	  var times=$('#times').val();	
+	  $('#show').val(creatnum(nums));
+	  $('#ipt').removeAttr("disabled");
+	  setTimeout('clearshow()',times);
+		
+	}
+
+	checknum=function(){
+
+		ipt=$('#ipt').val();//获取输入的值
+
+		if (show==ipt){
+			right+=1
+
+			new $.zui.Messager('回答正确', {
+				type:'success',
+				time:500,
+			    placement: 'top' // 定义显示位置
+			}).show();
+             
+			
+		}else{
+			wrong+=1
+			new $.zui.Messager('回答错误', {
+				type:'danger',
+				time:500,
+			    placement: 'top' // 定义显示位置
+			}).show();
+		}
+		$('#ipt').val('');
+		$('#ipt').attr("disabled",true);
+
+		// 统计赋值
+		percent=Math.round(right/(right+wrong)*100)
+		$('#right').val(right);
+		$('#wrong').val(wrong);
+		$('#percent').val(percent);
+
+		//自动点击
+		setTimeout('$("#newone").click()',1000);
+
+	}
+
+
+
+	$(document).keypress(function(event){  
+	    var keycode = (event.keyCode ? event.keyCode : event.which);  
+	    if(keycode == '13'){  
+	        if($('#ipt').val()==""){//如果输入为空就新生成
+	        	setTimeout('$("#newone").click()',1000);
+	        }else{
+	        	$("#postresult").click()
+	        }   
+	    }  
+	});  
+
+	</script>
+
+
+
+</body>
+</html>
