@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		img{
+			width:80%;		
+		}
+	</style>
+</head>
+<body>
+	<div id="showimg">
+		<img src="img/testfile 0032.jpg" alt="" id="current">
+	</div>
+	<button type="button" id="start">开始</button>
+	<button type="button" id="cancel" >暂停</button>
+</body>
+
+	<script src="jquery2.2.4.min.js"></script>
+	<script>
+	function PrefixInteger(num, length) {
+	 return (Array(length).join('0') + num).slice(-length);
+	}
+	
+	var str=""
+	var count=1
+	var int
+	function change(){
+		str="img/testfile "+PrefixInteger(count,4).toString()+".jpg"
+		$("#current").attr("src",str);
+		count+=1
+	}
+	$("#start").click(function(){
+		int=window.setInterval(change,300)
+	});
+	$("#cancel").click(function(){
+		window.clearInterval(int)
+	});
+	</script>
+</html>
