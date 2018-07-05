@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+
+<style>
+	body{
+		font-size: 12px;
+	}
+
+	
+	#tit{
+		position: fixed;
+		z-index: 999;
+		top:10px;
+		left:0px;
+
+	}
+
+	#pic{
+		float: right;
+	}
+
+	#lists{
+		height: 520px;
+		overflow: scroll;
+
+	}
+</style>
+<body>
+
+<div id="tit">
+	<div >
+			<select id="filename"> 
+				 <option>请选择文件夹</option>
+			</select> 
+			<p></p>
+			<p></p>
+	</div>
+
+
+	<div id="lists" name="lists">
+		
+	</div>
+</div>
+
+<div id="pic">
+
+	
+	<img id="img1" src="" alt="" style="width:380px;">
+</div>
+
+<script src="jquery2.2.4.min.js"></script>
+
+
+<script>
+$("#lists").on('click',"li",function(){
+	var a=$("#filename").find("option:selected").text()
+	$("li").css("color","black")
+	$(this).css("color","blue")
+	$('#img1')[0].src=a+"//"+$(this).text()
+	console.log(a+"//"+$(this).text())
+	window.scrollTo(0,0); 
+});
+
+// function qiehuan(){
+// 	// $('#img1')[0].src=$(this).text()
+// 	var obj = $('#lists')
+// 	qie(obj);
+// }
+
+// function qie(){
+// 	console.log($(this))
+// }
+
+
+$("#filename").change(function(){
+	$("li").remove();
+	// console.log($("#filename").find("option:selected").text())
+	var a=$("#filename").find("option:selected").text()
+	$.getJSON("data.json",function(data){
+		// console.log(data[a].length)
+		for(var i in data[a]){
+			// console.log(data[a][i])
+			// 
+			$("#lists").append("<li>"+data[a][i]+"</li>");
+
+		}
+	});
+	
+});
+
+
+
+
+	//获取title.
+	$.getJSON("data.json",function(data){
+			for (var key in data) {
+				// console.log(key)
+				$("#filename").append("<option>"+key+"</option> ");
+			}
+	})
+
+	//根据对应的列获取内容.
+	//本地运行需要在浏览器后加 --allow-file-access-from-files  注意最前面有个空格。
+	
+
+</script>
+	
+
+
+
+</body>
+</html>

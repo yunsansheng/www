@@ -48,7 +48,7 @@ header("Access-Control-Allow-Origin: *");
                 </div>
                 <div class="form-group">
                     <span>to: </span>
-                    <input name="to" class="form-control w70" type="text" value="100">
+                    <input name="to" class="form-control w70" type="text" value="1">
                 </div>
 				
 				<div class="dropdown form-group">
@@ -164,8 +164,8 @@ header("Access-Control-Allow-Origin: *");
 			contentType:"application/x-www-form-urlencoded",
 			queryParams:function(params){
 				return{
-					from: parseInt($("[name='from']").val()),
-					to: parseInt($("[name='to']").val()),  
+					from: parseInt($("[name='from']").val()*100),
+					to: parseInt($("[name='to']").val()*100),  
 					sign:$(".sel_sign.active").attr("value"),
 					del:$(".sel_del.active").attr("value"),
 					order : params.order, 
